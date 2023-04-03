@@ -1,0 +1,22 @@
+plugins {
+	id 'war'
+}
+
+repositories.mavenCentral()
+sourceCompatibility = 17
+tasks.withType(JavaCompile) {options.encoding = 'UTF-8'}
+
+dependencies {
+	/**
+	 * 動的Webプロジェクト（Tomcat9）用
+	 */
+	// コンパイル時のみ依存するクラスライブラリ
+	compileOnly 'jakarta.servlet:jakarta.servlet-api:4.0.+'
+	compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:2.3.+'
+	// コンパイル時には使用されない、実行時のみ依存するクラスライブラリ。JSTLを用いる場合のみ必要。
+	// runtimeOnly 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api:1.2.+'
+	// runtimeOnly 'org.apache.taglibs:taglibs-standard-impl:1.2.+'
+	
+	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'org.xerial:sqlite-jdbc:3.41.2.1'
+}
