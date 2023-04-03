@@ -109,27 +109,13 @@ public class Resources extends HttpServlet {
 		var completedParam = map.get("completed");
 		
 		// ここから発展課題
-		var exists = true;
-		if (title != null) {
-			exists = dao.updateTitle(id, title);
-		}
 
-		if (exists && date != null) {
-			exists = dao.updateDate(id, date);
-		}
 		
-		if (exists && completedParam != null) {
-			var completed = Boolean.parseBoolean(completedParam);
-			exists = dao.updateCompleted(id, completed);
-		}
 		
-		if(!exists) {
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	        return;
-		}
 		
-		PrintWriter out = response.getWriter();		
-		out.print(gson.toJson(dao.get(id), ToDo.class));
+		
+		
+		
 	}
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -146,15 +132,12 @@ public class Resources extends HttpServlet {
         var id = Integer.parseInt(path);
 		
         // ここから基本課題
-        var deletedTodo = dao.get(id);
-        if (deletedTodo == null) {
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	        return;
-        }
-		dao.delete(id);
-		
-		PrintWriter out = response.getWriter();		
-		out.print(gson.toJson(deletedTodo, ToDo.class));
+
+	
+	
+	
+	
+	
 	}
 	
 	private Map<String, String> parseQuery(String query) {
