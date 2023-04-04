@@ -35,9 +35,11 @@ public class Resources extends HttpServlet {
 	private String dbPath = "c:\\pleiades-jad2023\\workspace\\Rest\\jad.db";
 	private final DAO dao = new DAO("jdbc:sqlite:" + dbPath);
 	private Gson gson = new Gson();
-	private Type todosType = new TypeToken<ArrayList<ToDo>>(){}.getType();
-	
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	private Type todosType = new TypeToken<ArrayList<ToDo>>() {
+	}.getType();
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("application/json;charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		var path = request.getPathInfo();
@@ -52,51 +54,54 @@ public class Resources extends HttpServlet {
 		if (path.matches("^/\\d+$")) {
 			// URL が /todos/3 のようなパターンとマッチした場合。
 			//　この場合、pathは /3
-	        path = path.substring(1); // 先頭の1文字（/）を削除
-	        var todo = dao.get(Integer.parseInt(path));
-	        if (todo != null) {
+			path = path.substring(1); // 先頭の1文字（/）を削除
+			var todo = dao.get(Integer.parseInt(path));
+			if (todo != null) {
 				out.print(gson.toJson(todo, ToDo.class));
 				return;
-	        }
+			}
 		}
 
 		// それ以外
-        response.sendError(HttpServletResponse.SC_NOT_FOUND);
+		response.sendError(HttpServletResponse.SC_NOT_FOUND);
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json;charset=UTF-8");
 
 		var title = request.getParameter("title");
 
 		if (title == null) {
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	        return;
+			// 必須パラメータが足りない場合は 400 Bad Request
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+			return;
 		}
 
 		var date = LocalDate.now().toString();
-		
+
 		var todo = dao.create(title, date, false);
 
-		PrintWriter out = response.getWriter();		
+		PrintWriter out = response.getWriter();
 		out.print(gson.toJson(todo, ToDo.class));
 	}
 
-	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPut(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json;charset=UTF-8");
 
 		var path = request.getPathInfo();
 		if (!path.matches("^/\\d+$")) {
 			// URL が /todos/3 のようなパターンとマッチしない場合。
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	        return;
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
 		}
-		
-        path = path.substring(1); // 先頭の1文字（/）を削除
-        var id = Integer.parseInt(path);
-		
+
+		path = path.substring(1); // 先頭の1文字（/）を削除
+		var id = Integer.parseInt(path);
+
 		// Tomcat では doPut, doDelete において
 		// request.getParameter() を用いたパラメータ取得ができない。
 		// よって、受信したデータを手動でパースする。
@@ -107,39 +112,29 @@ public class Resources extends HttpServlet {
 		var title = map.get("title");
 		var date = map.get("date");
 		var completedParam = map.get("completed");
-		
+
 		// ここから発展課題
 
-		
-		
-		
-		
-		
-		
 	}
-	
-	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("application/json;charset=UTF-8");
-		
+
 		var path = request.getPathInfo();
 		if (!path.matches("^/\\d+$")) {
 			// URL が /todos/3 のようなパターンとマッチしない場合。
-	        response.sendError(HttpServletResponse.SC_NOT_FOUND);
-	        return;
+			response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			return;
 		}
-		
-        path = path.substring(1); // 先頭の1文字（/）を削除
-        var id = Integer.parseInt(path);
-		
-        // ここから基本課題
 
-	
-	
-	
-	
-	
+		path = path.substring(1); // 先頭の1文字（/）を削除
+		var id = Integer.parseInt(path);
+
+		// ここから基本課題
+
 	}
-	
+
 	private Map<String, String> parseQuery(String query) {
 		var params = query.split("&");
 		var map = new HashMap<String, String>();
